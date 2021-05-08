@@ -117,19 +117,21 @@ def index():
     form = SearchForm()
     if form.validate_on_submit():
 
-        name = form.name.data
+        name = form.name.data.lower()
         try:
             db_sess = db_session.create_session()
-            author = str(db_sess.query(Book.author).filter(Book.name == name).first()[0])
-            library_id = int(db_sess.query(Book.library_id).filter(Book.name == name).first()[0])
-            library = str(db_sess.query(Library.name).filter(Library.id == library_id).first()[0])
-            address = form.city.data + ' ' + str(db_sess.query(Library.address).filter(Library.id == library_id).first()[0])
+            author = str(db_sess.query(Book.author).filter(Book.name == name.lower()).first()[0]).lower()
+            library_id = int(db_sess.query(Book.library_id).filter(Book.name == name.lower()).first()[0])
+            library = str(db_sess.query(Library.name).filter(Library.id == library_id).first()[0]).lower()
+            address = form.city.data + ' ' + str(db_sess.query(Library.address).filter(Library.id == library_id).
+                                                 first()[0]).lower()
             books = []
-            for book in db_sess.query(Book).filter(Book.name == name, Book.author == author, Book.library_id == library_id):
+            for book in db_sess.query(Book).filter(Book.name == name.lower(), Book.author == author,
+                                                   Book.library_id == library_id):
                 books.append(book.serialize)
             search.image(address)
-            true_city = db_sess.query(Library.city).filter(Library.name == library).first()[0]
-            if true_city == form.city.data:
+            true_city = db_sess.query(Library.city).filter(Library.name == library.lower()).first()[0].lower()
+            if true_city == form.city.data.lower():
                 if books:
                     params = {
                         'address': address,
@@ -157,10 +159,11 @@ def add_book():
         db_sess = db_session.create_session()
         if form.validate_on_submit():
             try:
-                lib_id = int(db_sess.query(Library.id).filter_by(name=form.library_id.data).first()[0])
+                lib_id = int(db_sess.query(Library.id).filter(Library.name == form.library_id.data.lower()).
+                             first()[0])
                 book = Book(
-                    name=form.name.data,
-                    author=form.author.data,
+                    name=form.name.data.lower(),
+                    author=form.author.data.lower(),
                     library_id=lib_id,
                 )
                 db_sess.add(book)
@@ -181,9 +184,9 @@ def add_library():
         if form.validate_on_submit():
 
             library = Library(
-                name=form.name.data,
-                city=form.city.data,
-                address=form.address.data,
+                name=form.name.data.lower(),
+                city=form.city.data.lower(),
+                address=form.address.data.lower(),
             )
             db_sess.add(library)
             db_sess.commit()
@@ -239,6 +242,6 @@ def on_profile():
 if __name__ == '__main__':
     db_session.global_init("db/library.db")  # инициилизация дб
     app.register_blueprint(api.blueprint)
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host='127.0.0.1', port=port)
 
