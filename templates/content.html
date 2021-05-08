@@ -1,0 +1,42 @@
+{% extends "main.html" %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    {{ form.csrf_token }}
+    <p>
+        {{ form.city.label }}<br>
+        {{ form.city(class="form-control", placeholder="Город") }}<br>
+        {% for error in form.city.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+
+
+
+    <p>
+        {{ form.name.label }}<br>
+        {{ form.name(class="form-control", placeholder="Название") }}<br>
+        {% for error in form.name.errors %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
+
+
+
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    {{message}}
+
+    {% if address %}
+    <img id="map" src="../static/img/{{ img }}?{{ ver }}" alt="Тут должна быть карта, но что то пошло не так:)" />
+
+
+    {% endif %}
+
+
+</form>
+{% endblock %}
