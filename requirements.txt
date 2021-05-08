@@ -3,6 +3,7 @@ requests
 sqlalchemy_serializer
 flask_login 
 werkzeug
+werkzeug.security
 sqlalchemy
 flask_wtf
 datetime
