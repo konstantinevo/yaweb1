@@ -1,4 +1,4 @@
 flask_restful
 flask_login 
-werkzeug.utils
-werkzeug.security
+werkzeug
+werkzeug
