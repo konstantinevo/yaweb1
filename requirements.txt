@@ -1,11 +1,9 @@
-
+flask
 flask_restful
-requests
-sqlalchemy_serializer
-flask_login 
+flask_login
 werkzeug
 sqlalchemy
-flask_wtf
-datetime
 wtforms
-werkzeug
+flask_wtf
+sqlalchemy_serializer
+requests
