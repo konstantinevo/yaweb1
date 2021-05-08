@@ -1,4 +1,10 @@
 flask_restful
+requests
+sqlalchemy_serializer
 flask_login 
 werkzeug
+sqlalchemy
+flask_wtf
+datetime
+wtforms
 werkzeug
