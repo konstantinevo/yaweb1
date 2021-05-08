@@ -33,6 +33,11 @@ def not_found(_):
     return make_response(jsonify({'error': 'Страничка не найдена'}), 404)
 
 
+@app.errorhandler(400)
+def not_found(_):
+    return make_response(jsonify({'error': 'Такая библиотека отсутствует в БД'}), 400)
+
+
 @app.errorhandler(403)
 def no_access(_):
     return make_response(jsonify({'error': 'У вас нет прав доступа к этой странице'}))
@@ -61,7 +66,6 @@ def user_registration():
         if db_sess.query(People).filter(People.email == form.email.data).first():
             return render_template('user_registration.html', title='Регистрация', form=form,
                                    message="Такой пользователь уже существует")
-        print(form.type.data)
         if form.type.data == '2':
             role = 'Admin'
         else:
@@ -132,7 +136,6 @@ def index():
                         'img': f'map1.png',
                         'ver': f'{randint(0, 10324324939)}'
                     }
-                    print(books)
                     return render_template('content.html', **params,
                                            title=f'{name} автор {author} в'
                                                  f' {library} в городе {form.city.data}', form=form)
@@ -153,16 +156,18 @@ def add_book():
         form = ItemForm()
         db_sess = db_session.create_session()
         if form.validate_on_submit():
-            lib_id = int(db_sess.query(Library.id).filter_by(name=form.library_id.data).first()[0])
-            print(lib_id)
-            book = Book(
-                name=form.name.data,
-                author=form.author.data,
-                library_id=lib_id,
-            )
-            db_sess.add(book)
-            db_sess.commit()
-            return redirect('/book_add')
+            try:
+                lib_id = int(db_sess.query(Library.id).filter_by(name=form.library_id.data).first()[0])
+                book = Book(
+                    name=form.name.data,
+                    author=form.author.data,
+                    library_id=lib_id,
+                )
+                db_sess.add(book)
+                db_sess.commit()
+                return redirect('/book_add')
+            except:
+                abort(400)
         return render_template('book_add.html', form=form, title='Добавление книги')
     abort(403)
 
