@@ -1,6 +1,6 @@
-from requests import get
+
 import requests
-from sys import exit
+
 
 
 def image(address):
